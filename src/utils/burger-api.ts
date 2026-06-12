@@ -1,7 +1,13 @@
 import { setCookie, getCookie } from './cookie';
-import { TIngredient, TOrder, TOrdersData, TUser } from './types';
+import { TIngredient, TOrder, TUser } from './types';
 
-const URL = process.env.BURGER_API_URL;
+const URL =
+  process.env.BURGER_API_URL || 'https://norma.education-services.ru/api';
+
+export const WS_URL = URL.replace('https://', 'wss://').replace(
+  '/api',
+  '/orders'
+);
 
 const checkResponse = <T>(res: Response): Promise<T> =>
   res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
@@ -67,10 +73,6 @@ type TFeedsResponse = TServerResponse<{
   totalToday: number;
 }>;
 
-type TOrdersResponse = TServerResponse<{
-  data: TOrder[];
-}>;
-
 export const getIngredientsApi = () =>
   fetch(`${URL}/ingredients`)
     .then((res) => checkResponse<TIngredientsResponse>(res))
@@ -106,14 +108,8 @@ type TOwner = {
   updatedAt: string;
 };
 
-type TNewOrder = {
-  _id: string;
-  status: string;
-  name: string;
+type TNewOrder = TOrder & {
   owner: TOwner;
-  createdAt: string;
-  updatedAt: string;
-  number: number;
   price: number;
 };
 
@@ -147,7 +143,12 @@ export const getOrderByNumberApi = (number: number) =>
     headers: {
       'Content-Type': 'application/json'
     }
-  }).then((res) => checkResponse<TOrderResponse>(res));
+  })
+    .then((res) => checkResponse<TOrderResponse>(res))
+    .then((data) => {
+      if (data?.success) return data;
+      return Promise.reject(data);
+    });
 
 export type TRegisterData = {
   email: string;
@@ -229,6 +230,9 @@ export const getUserApi = () =>
     headers: {
       authorization: getCookie('accessToken')
     } as HeadersInit
+  }).then((data) => {
+    if (data?.success) return data;
+    return Promise.reject(data);
   });
 
 export const updateUserApi = (user: Partial<TRegisterData>) =>
@@ -239,6 +243,9 @@ export const updateUserApi = (user: Partial<TRegisterData>) =>
       authorization: getCookie('accessToken')
     } as HeadersInit,
     body: JSON.stringify(user)
+  }).then((data) => {
+    if (data?.success) return data;
+    return Promise.reject(data);
   });
 
 export const logoutApi = () =>

@@ -74,3 +74,9 @@
   width: 100%;
   max-width: 536px;
 }
+
+.order_error {
+  color: #ff0000;
+  text-align: right;
+  padding-right: 16px;
+}
