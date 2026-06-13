@@ -7,12 +7,6 @@ export const selectIngredientsLoading = (state: RootState) =>
   selectIngredientsState(state).isLoading;
 export const selectIngredientsError = (state: RootState) =>
   selectIngredientsState(state).error;
-export const selectBuns = (state: RootState) =>
-  selectIngredients(state).filter((ingredient) => ingredient.type === 'bun');
-export const selectMains = (state: RootState) =>
-  selectIngredients(state).filter((ingredient) => ingredient.type === 'main');
-export const selectSauces = (state: RootState) =>
-  selectIngredients(state).filter((ingredient) => ingredient.type === 'sauce');
 export const selectIngredientById = (state: RootState, id?: string) =>
   selectIngredients(state).find((ingredient) => ingredient._id === id) ?? null;
 
