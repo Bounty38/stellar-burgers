@@ -36,11 +36,11 @@ export const Profile: FC = () => {
     if (formValue.email !== user?.email) updatedData.email = formValue.email;
     if (formValue.password) updatedData.password = formValue.password;
 
-    dispatch(updateUser(updatedData))
-      .unwrap()
-      .then(() => {
+    dispatch(updateUser(updatedData)).then((result) => {
+      if (updateUser.fulfilled.match(result)) {
         setFormValue((prev) => ({ ...prev, password: '' }));
-      });
+      }
+    });
   };
 
   const handleCancel = (e: SyntheticEvent) => {

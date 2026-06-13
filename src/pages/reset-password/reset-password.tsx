@@ -17,12 +17,12 @@ export const ResetPassword: FC = () => {
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    dispatch(resetPassword({ password, token }))
-      .unwrap()
-      .then(() => {
+    dispatch(resetPassword({ password, token })).then((result) => {
+      if (resetPassword.fulfilled.match(result)) {
         localStorage.removeItem('resetPassword');
         navigate('/login');
-      });
+      }
+    });
   };
 
   useEffect(() => {

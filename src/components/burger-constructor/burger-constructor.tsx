@@ -39,11 +39,11 @@ export const BurgerConstructor: FC = () => {
       constructorItems.bun._id
     ];
 
-    dispatch(createOrder(ingredientIds))
-      .unwrap()
-      .then(() => {
+    dispatch(createOrder(ingredientIds)).then((result) => {
+      if (createOrder.fulfilled.match(result)) {
         dispatch(clearConstructor());
-      });
+      }
+    });
   };
   const closeOrderModal = () => {
     dispatch(clearOrderModal());
